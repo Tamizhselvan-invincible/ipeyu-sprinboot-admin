@@ -25,6 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://52.66.253.103")
 public class UserController {
     private static final Logger log = LogManager.getLogger(UserController.class);
     @Autowired

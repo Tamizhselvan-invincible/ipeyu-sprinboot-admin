@@ -21,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
+@CrossOrigin(origins = "http://52.66.253.103")
 public class TransactionController {
     private static final Logger log = LogManager.getLogger(TransactionController.class);
     @Autowired

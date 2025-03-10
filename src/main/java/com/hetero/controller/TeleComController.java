@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/telecom")
+@CrossOrigin(origins = "http://52.66.253.103")
 public class TeleComController {
 
     private static final Logger log = LoggerFactory.getLogger(TeleComController.class);

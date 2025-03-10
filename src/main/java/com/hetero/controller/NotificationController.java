@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 
 
 @RestController
-@CrossOrigin(origins = "http://65.2.127.57")
+@CrossOrigin(origins = "http://52.66.253.103")
 public class NotificationController {
 
     @Autowired
