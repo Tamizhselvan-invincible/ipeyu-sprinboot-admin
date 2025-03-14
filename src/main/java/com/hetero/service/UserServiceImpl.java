@@ -148,10 +148,10 @@ public class UserServiceImpl implements UserService {
        User user = userDao.findById(userId).orElseThrow();
        String useCashback = user.getCashBack();
        if (useCashback == null)
-           user.setCashBack(cashBackAmount.toString());
+           user.setCashBack(String.valueOf(cashBackAmount));
        else {
            Double cashBack = Double.parseDouble(user.getCashBack()) + cashBackAmount;
-           user.setCashBack(cashBack.toString());
+           user.setCashBack(String.valueOf(cashBack));
        }
        userDao.save(user);
     }

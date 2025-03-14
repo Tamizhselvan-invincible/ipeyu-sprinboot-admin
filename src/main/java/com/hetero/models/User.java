@@ -118,6 +118,10 @@ public class User implements UserDetails {
     @Column(name = "os_type")
     private String osType;
 
+    @Column(name = "life_time_earning")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String lifeTimeEarning;
+
     @OneToMany(mappedBy = "userId")
     @JsonIgnore
     @JsonManagedReference
@@ -148,6 +152,15 @@ public class User implements UserDetails {
         this.dateUpdated = new Date();
         this.cardNumber = generateUniqueCardNumber();
         this.cashBack = "0.0";
+        this.lifeTimeEarning = "0.0";
+    }
+
+    public String getLifeTimeEarning () {
+        return lifeTimeEarning;
+    }
+
+    public void setLifeTimeEarning (String lifeTimeEarning) {
+        this.lifeTimeEarning = lifeTimeEarning;
     }
 
     public User (
@@ -169,7 +182,6 @@ public class User implements UserDetails {
             String deviceBrandName,
             String deviceVersionCode,
             String osType,
-            String cashBack,
             List<Transaction> transactions,
             List<Token> tokens) {
         this.firstName = firstName;
@@ -195,7 +207,8 @@ public class User implements UserDetails {
         this.tokens = tokens;
         this.cardNumber = generateUniqueCardNumber();
         this.cardType = CardType.BASIC;
-        this.cashBack = cashBack;
+        this.cashBack = "0.0";
+        this.lifeTimeEarning = "0.0";
     }
 
 

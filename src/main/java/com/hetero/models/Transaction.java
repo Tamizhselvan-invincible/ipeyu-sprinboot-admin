@@ -24,9 +24,7 @@ public class Transaction {
     private Long id;
 
     @Column(name = "aggregated_transaction_id")
-    private Long aggregatedTransactionId;
-
-
+    private String aggregatedTransactionId;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
@@ -44,7 +42,6 @@ public class Transaction {
     private Long userId;
 
     @Column(name = "transaction_taken_time")
-    @Convert(converter = AESEncryptor.class)
     private Long transactionTakenTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -79,12 +76,45 @@ public class Transaction {
     @Convert(converter = AESEncryptor.class)
     private String transactionReference;
 
+    @Column(name = "txn_image")
+    private String txnImage;
+
+    @Column(name = "txn_user_name")
+    private String txnUserName;
+
+    @Column(name = "txn_user_id")
+    private Long txnUserId;
+
+    @Column(name = "txn_status")
+    private String txnStatus;
+
+    @Column(name = "type_of_transaction")
+    private TransactionType typeOfTransaction;
+
 
     public Transaction () {
         this.dateCreated = new Date();
     }
 
-    public Transaction (Long aggregatedTransactionId, TransactionStatus status, String cashBack, boolean isDeleted, Long userId, Long transactionTakenTime, SubscriptionPlan subscriptionPlan, String amount, Platform platformType, PaymentMethod paymentMethod, Date deletedAt, String transactionReference) {
+    public Transaction (
+            String  aggregatedTransactionId,
+            TransactionStatus status,
+            String cashBack,
+            boolean isDeleted,
+            Long userId,
+            Long transactionTakenTime,
+            SubscriptionPlan subscriptionPlan,
+            String amount,
+            Platform platformType,
+            PaymentMethod paymentMethod,
+            Date dateCreated,
+            Date deletedAt,
+            String transactionReference,
+            String txnImage,
+            String txnUserName,
+            Long txnUserId,
+            String txnStatus,
+            TransactionType typeOfTransaction) {
         this.aggregatedTransactionId = aggregatedTransactionId;
         this.status = status;
         this.cashBack = cashBack;
@@ -98,6 +128,11 @@ public class Transaction {
         this.dateCreated = new Date();
         this.deletedAt = deletedAt;
         this.transactionReference = transactionReference;
+        this.txnImage = txnImage;
+        this.txnUserName = txnUserName;
+        this.txnUserId = txnUserId;
+        this.txnStatus = txnStatus;
+        this.typeOfTransaction = typeOfTransaction;
     }
 
     public Long getId () {
@@ -108,11 +143,11 @@ public class Transaction {
         this.id = id;
     }
 
-    public Long getAggregatedTransactionId () {
+    public String getAggregatedTransactionId () {
         return aggregatedTransactionId;
     }
 
-    public void setAggregatedTransactionId (Long aggregatedTransactionId) {
+    public void setAggregatedTransactionId (String  aggregatedTransactionId) {
         this.aggregatedTransactionId = aggregatedTransactionId;
     }
 
@@ -212,6 +247,45 @@ public class Transaction {
         this.transactionReference = transactionReference;
     }
 
+    public String getTxnImage () {
+        return txnImage;
+    }
+
+    public void setTxnImage (String txnImage) {
+        this.txnImage = txnImage;
+    }
+
+    public String getTxnUserName () {
+        return txnUserName;
+    }
+
+    public void setTxnUserName (String txnUserName) {
+        this.txnUserName = txnUserName;
+    }
+
+    public Long getTxnUserId () {
+        return txnUserId;
+    }
+
+    public void setTxnUserId (Long txnUserId) {
+        this.txnUserId = txnUserId;
+    }
+
+    public String getTxnStatus () {
+        return txnStatus;
+    }
+
+    public void setTxnStatus (String txnStatus) {
+        this.txnStatus = txnStatus;
+    }
+
+    public TransactionType getTypeOfTransaction () {
+        return typeOfTransaction;
+    }
+
+    public void setTypeOfTransaction (TransactionType typeOfTransaction) {
+        this.typeOfTransaction = typeOfTransaction;
+    }
 
     @Override
     public String toString () {
@@ -230,6 +304,11 @@ public class Transaction {
                 ", dateCreated=" + dateCreated +
                 ", deletedAt=" + deletedAt +
                 ", transactionReference='" + transactionReference + '\'' +
+                ", txnImage='" + txnImage + '\'' +
+                ", txnUserName='" + txnUserName + '\'' +
+                ", txnUserId=" + txnUserId +
+                ", txnStatus='" + txnStatus + '\'' +
+                ", typeOfTransaction=" + typeOfTransaction +
                 '}';
     }
 }

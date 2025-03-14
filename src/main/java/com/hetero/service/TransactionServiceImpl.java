@@ -1,9 +1,9 @@
 package com.hetero.service;
 
-import com.hetero.models.Platform;
-import com.hetero.models.SubscriptionPlan;
-import com.hetero.models.Transaction;
-import com.hetero.models.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.hetero.exception.TransactionNotUpdateException;
+import com.hetero.models.*;
+import com.hetero.models.telecom.PaymentRequest;
 import com.hetero.repository.SubscriptionPlanDao;
 import com.hetero.repository.TransactionDao;
 import com.hetero.utils.ApiResponse;
@@ -128,7 +128,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         Transaction existingTransaction = optionalTransaction.get();
-
         existingTransaction.setAmount(transaction.getAmount());
         existingTransaction.setAggregatedTransactionId(transaction.getAggregatedTransactionId());
         existingTransaction.setTransactionReference(transaction.getTransactionReference());
@@ -142,5 +141,54 @@ public class TransactionServiceImpl implements TransactionService {
 
         return new ApiResponse<>(HttpStatus.OK.value(), "Transaction updated successfully", updatedTransaction);
     }
+
+
+    @Transactional
+    @Override
+    public Transaction updateTransactionByPaymentRequest (PaymentRequest paymentRequest, JsonNode jsonData) throws TransactionNotUpdateException {
+        String status = jsonData.get("status").asText();
+        String payId;
+        payId = jsonData.get("payid").asText();
+        if (!jsonData.has("payid")){
+            payId = "-1";
+        }
+        if (payId == null || payId.isEmpty()) {
+            payId = "-1";
+        }
+
+        SubscriptionPlan subscriptionPlan = paymentRequest.getSubscriptionPlan();
+
+
+        Transaction transaction = new Transaction();
+        transaction.setAggregatedTransactionId(payId);
+        if (status.equals("success")) {
+            transaction.setStatus(TransactionStatus.Success);
+        } else if (status.equals("failure")) {
+            transaction.setStatus(TransactionStatus.Failed);
+        } else {
+            transaction.setStatus(TransactionStatus.Processing);
+        }
+        transaction.setCashBack(String.valueOf(paymentRequest.getCashback()));
+        transaction.setUserId(paymentRequest.getUserID());
+        transaction.setSubscriptionPlan(subscriptionPlan);
+        transaction.setAmount(String.valueOf(paymentRequest.getAmount()));
+        transaction.setPlatformType(paymentRequest.getPlatform());
+        transaction.setPaymentMethod(paymentRequest.getPaymentMethod());
+        transaction.setTxnImage(paymentRequest.getTxnImage());
+        transaction.setTxnUserName(paymentRequest.getTxnUserName());
+        transaction.setTxnUserId(paymentRequest.getTxnUserId());
+        transaction.setTxnStatus(paymentRequest.getTxnStatus());
+        transaction.setTypeOfTransaction(paymentRequest.getTypeOfTransaction());
+
+    userService.updateUserCashBackTransactions(
+            paymentRequest.getUserID(),
+            paymentRequest.getCashback()
+    );
+
+    return addTransaction(transaction);
+    }
+
+
+
 
 }

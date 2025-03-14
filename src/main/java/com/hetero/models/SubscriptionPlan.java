@@ -19,13 +19,9 @@ public class SubscriptionPlan {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-//    @NotBlank(message = "Plan name is required")
     @Column(name = "plan_name")
-    @Convert(converter = AESEncryptor.class)
     private String name;
 
-//    @NotBlank(message = "Operator name is required")
-    @Convert(converter = AESEncryptor.class)
     private String operator;
 
     @NotNull(message = "Amount is required")
@@ -42,17 +38,16 @@ public class SubscriptionPlan {
     private String callBenefits;
 
     @Column(name = "sms_benefits")
-    @Convert(converter = AESEncryptor.class)
     private String smsBenefits;
 
     @Column(columnDefinition = "TEXT")
-    @Convert(converter = AESEncryptor.class)
     private String description;
 
     @Column(name = "is_active")
     private boolean isActive = true;
 
     @Column(name = "created_at")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @CreationTimestamp
     private Date dateCreated;
 
