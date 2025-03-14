@@ -112,6 +112,9 @@ public class UserServiceImpl implements UserService {
         if (newUser.getDeviceVersionCode() != null) existingUser.setDeviceVersionCode(newUser.getDeviceVersionCode());
         if (newUser.getOsType() != null) existingUser.setOsType(newUser.getOsType());
         if(newUser.getTokens() != null) existingUser.setTokens(newUser.getTokens());
+        if(newUser.getCashBack() != null) existingUser.setCashBack(newUser.getCashBack());
+//        if(newUser.getCardType() != null) existingUser.setCardType(newUser.getCardType());
+
 
         // Handle boolean field updates
         existingUser.setBlocked(newUser.isBlocked());
@@ -143,8 +146,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserCashBackTransactions(Long userId,Double cashBackAmount) {
        User user = userDao.findById(userId).orElseThrow();
-       Double cashBack = Double.parseDouble(user.getCashBack()) + cashBackAmount;
-       user.setCashBack(cashBack.toString());
+       String useCashback = user.getCashBack();
+       if (useCashback == null)
+           user.setCashBack(cashBackAmount.toString());
+       else {
+           Double cashBack = Double.parseDouble(user.getCashBack()) + cashBackAmount;
+           user.setCashBack(cashBack.toString());
+       }
        userDao.save(user);
     }
 

@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/bus")
-@CrossOrigin(origins = "http://52.66.253.103")
+@CrossOrigin(origins = {"http://52.66.253.103", "http://localhost:8008"})
 public class BusTicketController {
 
     @Autowired

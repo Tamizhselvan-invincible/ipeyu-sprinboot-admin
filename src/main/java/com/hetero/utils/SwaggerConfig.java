@@ -14,7 +14,8 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .servers(List.of(
                         new Server().url("http://localhost:8008").description("Local Server"),
-                        new Server().url("http://52.66.253.103").description("AWS Server")
+                        new Server().url("http://52.66.253.103:8008").description("AWS Server") // Include port
                 ));
     }
 }
+

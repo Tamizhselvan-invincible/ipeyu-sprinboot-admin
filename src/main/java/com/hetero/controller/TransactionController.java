@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
-@CrossOrigin(origins = "http://52.66.253.103")
+@CrossOrigin(origins = {"http://52.66.253.103", "http://localhost:8008"})
 public class TransactionController {
     private static final Logger log = LogManager.getLogger(TransactionController.class);
     @Autowired
@@ -51,8 +51,11 @@ public class TransactionController {
             List<Transaction> transactions = transactionService.getAllTransactions();
 
             if (transactions.isEmpty()) {
-                return ResponseEntity.ok()
-                        .body(new ApiResponse<>(HttpStatus.NO_CONTENT.value(), "No transactions found", transactions));
+                return ResponseEntity.status(HttpStatus.ACCEPTED)
+                        .body(new ApiResponse<>(
+                                HttpStatus.NO_CONTENT.value(),
+                                "No transactions found",
+                                transactions));
             }
 
             return ResponseEntity.ok(new ApiResponse<>(HttpStatus.OK.value(), "Transactions retrieved successfully", transactions));

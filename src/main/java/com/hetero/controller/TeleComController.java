@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/telecom")
-@CrossOrigin(origins = "http://52.66.253.103")
+@CrossOrigin(origins = {"http://52.66.253.103", "http://localhost:8008"})
 public class TeleComController {
 
     private static final Logger log = LoggerFactory.getLogger(TeleComController.class);
@@ -57,7 +57,12 @@ public class TeleComController {
     )
     {
 
-        Long userId = Long.parseLong(clientId);
+        Long userId;
+        try {
+            userId = Long.parseLong(clientId);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(new ApiErrorResponse<>(400, "Invalid client ID", e.getMessage(), null));
+        }
 
         if (userService.getUser(userId) == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -66,42 +71,65 @@ public class TeleComController {
         }
 
         String data = telecomService.rechargePayment(mobileNo,amount,providerId,clientId);
+
+        if (data == null || data.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(new ApiErrorResponse<>(503, "No Response from Telecom Service", "Empty response received", null));
+        }
+
         JsonNode jsonData;
         try {
             jsonData = objectMapper.readTree(data);
-
-            String status = jsonData.get("status").asText();
-            String payId = jsonData.get("payid").asText();
-
-            SubscriptionPlan subscriptionPlan = new SubscriptionPlan();
-
-
-            subscriptionPlan.setAmount(BigDecimal.valueOf(Double.parseDouble(amount)));
-
-            Transaction transaction = new Transaction();
-            transaction.setAmount(amount);
-            transaction.setCashBack(String.valueOf(cashback));
-            transaction.setPaymentMethod(paymentMethod);
-            transaction.setUserId(userId);
-            if (status.equals("success")) {
-                transaction.setStatus(TransactionStatus.Success);
-            } else if (status.equals("failure")) {
-                transaction.setStatus(TransactionStatus.Failed);
-            }
-            transaction.setAggregatedTransactionId(Long.parseLong(payId));
-            transaction.setPlatformType(platform);
-            transaction.setSubscriptionPlan(subscriptionPlan);
-
-            userService.updateUserCashBackTransactions(userId,cashback);
-            transactionService.addTransaction(transaction);
-
         } catch (JsonProcessingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiErrorResponse<>(500, "Error parsing JSON", e.getMessage(),null));
-        } catch (NullPointerException e) {
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .body(new ApiErrorResponse<>(503, "Error parsing JSON", e.getMessage(),null));
         }
+
+
+        if (jsonData == null || !jsonData.has("status")) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ApiErrorResponse<>(417, "Invalid JSON Response", "Missing required fields", null));
+        }
+
+        String status = jsonData.get("status").asText();
+        String payId;
+        if (!jsonData.has("payid")){
+            payId = "0";
+        }
+          payId = jsonData.get("payid").asText();
+
+        if (payId == null || payId.isEmpty()) {
+            payId = "0";
+        }
+        SubscriptionPlan subscriptionPlan = new SubscriptionPlan();
+        try {
+            subscriptionPlan.setAmount(BigDecimal.valueOf(Double.parseDouble(amount)));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(new ApiErrorResponse<>(400, "Invalid Amount Format", e.getMessage(), null));
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setAmount(amount);
+        transaction.setCashBack(String.valueOf(cashback));
+        transaction.setPaymentMethod(paymentMethod);
+        transaction.setUserId(userId);
+        if (status.equals("success")) {
+            transaction.setStatus(TransactionStatus.Success);
+        } else if (status.equals("failure")) {
+            transaction.setStatus(TransactionStatus.Failed);
+        }
+        try {
+            transaction.setAggregatedTransactionId(Long.parseLong(payId));
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(new ApiErrorResponse<>(400, "Invalid Pay ID", e.getMessage(), null));
+        }
+
+        transaction.setPlatformType(platform);
+        transaction.setSubscriptionPlan(subscriptionPlan);
+
+        userService.updateUserCashBackTransactions(userId,cashback);
+        transactionService.addTransaction(transaction);
+
         ApiResponse<JsonNode> apiResponse = new ApiResponse<>(202,"Recharge Successful", jsonData);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(apiResponse);
     }

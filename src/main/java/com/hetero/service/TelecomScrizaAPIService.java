@@ -53,6 +53,7 @@ public class TelecomScrizaAPIService {
         ));
 
         String responseString = executeGetRequest(url);
+
         if (responseString == null) {
             return "{\"error_code\": 500, \"error_message\": \"Failed to process request\"}";
         }
@@ -119,8 +120,10 @@ public class TelecomScrizaAPIService {
                 log.error("API Error: {} - {}", response.code(), response.message());
                 return null;
             }
+
             return response.body() != null ? response.body().string() : null;
         } catch (Exception e) {
+            log.error("API Error: {} - {}", e.toString(), e.getMessage());
             log.error("Exception in API call: ", e);
             return null;
         }

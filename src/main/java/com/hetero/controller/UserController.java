@@ -19,13 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://52.66.253.103")
+@CrossOrigin(origins = {"http://52.66.253.103", "http://localhost:8008"})
 public class UserController {
     private static final Logger log = LogManager.getLogger(UserController.class);
     @Autowired
@@ -170,29 +171,60 @@ public class UserController {
     ///GET MAPPINGS
 
     @GetMapping("/{id}/transactions")
-    public ResponseEntity<List<Transaction>> getUserTransactions(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserTransactions(id));
+    public ResponseEntity<?> getUserTransactions(@PathVariable Long id) {
+        List<Transaction> transactions = userService.getUserTransactions(id);
+        if (transactions.isEmpty()) {
+            ApiResponse<List<Transaction>> nullResponse = new ApiResponse<>(204, "Users Transaction Fetched Successfully.But No Data", new ArrayList<>());
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(nullResponse);
+        }
+        ApiResponse<List<Transaction>> successResponse = new ApiResponse<>(200, "User Transaction Fetched Successfully", transactions);
+        return ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
         User user = userService.getUser(id);
-        return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
+        if(user == null) {
+            ApiResponse<User> noContentResponse = new ApiResponse<>(400, "User Not Found",user);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(noContentResponse);
+        }
+
+        ApiResponse<User> successResponse = new ApiResponse<>(200, "User Fetched Successfully", user);
+
+        return  ResponseEntity.status(HttpStatus.OK).body(successResponse);
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<?> getAllUsers() {
+        List<User> user = userService.getAllUsers();
+        if(user.isEmpty()) {
+            ApiResponse<List<User>> nullResponse = new ApiResponse<>(204, "User Not Found",user);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(nullResponse);
+        }
+        ApiResponse<List<User>> successResponse = new ApiResponse<>(200, "User Fetched Successfully", user);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(successResponse);
     }
 
     @GetMapping("/unblocked")
-    public ResponseEntity<List<User>> getAllUnBlockedUsers() {
-        return ResponseEntity.ok(userService.getAllUnBlockedUsers());
+    public ResponseEntity<?> getAllUnBlockedUsers() {
+        List<User> user = userService.getAllUnBlockedUsers();
+        if(user.isEmpty()) {
+            ApiResponse<List<User>> nullResponse = new ApiResponse<>(204, "User Not Found",user);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(nullResponse);
+        }
+        ApiResponse<List<User>> successResponse = new ApiResponse<>(200, "User Fetched Successfully", user);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(successResponse);
     }
 
     @GetMapping("/blocked")
-    public ResponseEntity<List<User>> getAllBlockedUsers() {
-        return ResponseEntity.ok(userService.getAllBlockedUsers());
+    public ResponseEntity<?> getAllBlockedUsers() {
+        List<User> user = userService.getAllBlockedUsers();
+        if(user.isEmpty()){
+            ApiResponse<List<User>> nullResponse = new ApiResponse<>(204, "User Not Found",user);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(nullResponse);
+        }
+        ApiResponse<List<User>> successResponse = new ApiResponse<>(200, "User Fetched Successfully", user);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(successResponse);
     }
 
 
