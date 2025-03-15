@@ -89,7 +89,7 @@ public class Transaction {
     private String txnStatus;
 
     @Column(name = "type_of_transaction")
-    private TransactionType typeOfTransaction;
+    private String typeOfTransaction;
 
 
     public Transaction () {
@@ -114,7 +114,7 @@ public class Transaction {
             String txnUserName,
             Long txnUserId,
             String txnStatus,
-            TransactionType typeOfTransaction) {
+            String typeOfTransaction) {
         this.aggregatedTransactionId = aggregatedTransactionId;
         this.status = status;
         this.cashBack = cashBack;
@@ -279,11 +279,11 @@ public class Transaction {
         this.txnStatus = txnStatus;
     }
 
-    public TransactionType getTypeOfTransaction () {
+    public String getTypeOfTransaction () {
         return typeOfTransaction;
     }
 
-    public void setTypeOfTransaction (TransactionType typeOfTransaction) {
+    public void setTypeOfTransaction (String typeOfTransaction) {
         this.typeOfTransaction = typeOfTransaction;
     }
 

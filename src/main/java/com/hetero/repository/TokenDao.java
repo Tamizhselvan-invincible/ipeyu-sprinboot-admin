@@ -10,7 +10,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface TokenDao extends JpaRepository<Token, Integer> {
+public interface TokenDao extends JpaRepository<Token, Long> {
 
     @Query("""
     select t from Token t inner join User u on t.user.id = u.id

@@ -10,6 +10,7 @@ import com.hetero.service.TransactionService;
 import com.hetero.service.UserService;
 import com.hetero.utils.ApiErrorResponse;
 import com.hetero.utils.ApiResponse;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +46,24 @@ public class TeleComController {
     }
 
     @PostMapping("/recharge-payment")
-    public ResponseEntity<?> processRecharge(@RequestBody PaymentRequest paymentRequest)
+    public ResponseEntity<?> processRecharge(@Valid  @RequestBody PaymentRequest paymentRequest)
     {
         if (userService.getUser(paymentRequest.getUserID()) == null) {
           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ApiErrorResponse<>(404,"User Not found", "Null Pointer Exception",null));
        }
+        if (paymentRequest.getEnvironment().equals("LIVE"))
+         if(!telecomService.verifyBalanceAmount(paymentRequest.getAmount())){
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(
+              new ApiErrorResponse<>(HttpStatus.SERVICE_UNAVAILABLE.value(), "Amount Not Sufficient To Make the Recharge", "Invalid Amount",null)
+            );
+        }
         String data = telecomService.rechargePayment(
                 paymentRequest.getMobileNo(),
                 String.valueOf(paymentRequest.getAmount()),
                 paymentRequest.getProviderId(),
-                String.valueOf(paymentRequest.getUserID())
+                String.valueOf(paymentRequest.getUserID()),
+                paymentRequest.getEnvironment()
         );
     if (data == null || data.trim().isEmpty()) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)

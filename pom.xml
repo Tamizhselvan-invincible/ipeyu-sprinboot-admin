@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.hetero</groupId>
 	<artifactId>iPeyu-Backend-admin</artifactId>
-	<version>1.2.8</version>
+	<version>1.3.0-TEST</version>
 <!--	<version>1.1.0-SNAPSHOT</version>-->
 	<name>iPeyu-Backend-admin</name>
 	<description>iPeyU Backend Admin </description>

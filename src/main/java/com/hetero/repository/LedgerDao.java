@@ -16,7 +16,7 @@ import java.util.Optional;
 //}
 
 @Repository
-public interface LedgerDao extends JpaRepository<Ledger, Integer> {
+public interface LedgerDao extends JpaRepository<Ledger, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Ledger> findFirstByOrderByIdAsc();
 }

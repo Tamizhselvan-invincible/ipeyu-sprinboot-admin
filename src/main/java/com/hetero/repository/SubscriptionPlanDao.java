@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface SubscriptionPlanDao extends JpaRepository<SubscriptionPlan, Integer> {
+public interface SubscriptionPlanDao extends JpaRepository<SubscriptionPlan, Long> {
 }

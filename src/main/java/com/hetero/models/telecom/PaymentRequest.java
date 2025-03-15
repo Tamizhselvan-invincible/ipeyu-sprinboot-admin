@@ -3,44 +3,55 @@ package com.hetero.models.telecom;
 import com.hetero.models.PaymentMethod;
 import com.hetero.models.Platform;
 import com.hetero.models.SubscriptionPlan;
-import com.hetero.models.TransactionType;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public class PaymentRequest {
 
+    @NotNull(message = "Mobile Number Cannot be Null")
     @Pattern(regexp = "[6789]{1}[0-9]{9}", message = "Enter valid 10 digit mobile number")
-    String mobileNo;
+    private String mobileNo;
+
+    @NotNull(message = "Amount Cannot be Null")
+    @Valid
+    private Double amount;
+
+    @NotNull(message = "Provider Id Cannot be Null")
+    private String providerId;
+
+    @NotNull(message = "User Id Cannot be Null")
+    private Long userID;
+
 
     @Valid
-    Double amount;
+    private Double cashback;
 
-    String providerId;
+    @NotNull(message = "Mobile Number Cannot be Null")
+    @Valid
+    private PaymentMethod paymentMethod;
 
-    Long userID;
 
     @Valid
-    Double cashback;
+    private Platform platform;
 
-    @Valid
-    PaymentMethod paymentMethod;
+    private String txnImage;
 
-    @Valid
-    Platform platform;
+    private String txnUserName;
 
-    String txnImage;
+    private Long txnUserId;
 
-    String txnUserName;
+    private String txnStatus;
 
-    Long txnUserId;
-
-    String txnStatus;
-
-    @Valid
-    TransactionType typeOfTransaction;
+    String typeOfTransaction;
 
     @Valid
     SubscriptionPlan subscriptionPlan;
+
+    @NotNull(message = "Environment Cannot be Null")
+    @Pattern(regexp = "^(UAT|LIVE)$", message = "Environment must be either UAT or LIVE")
+    private String environment;
+
 
     public PaymentRequest (
             String mobileNo,
@@ -54,8 +65,9 @@ public class PaymentRequest {
             String txnUserName,
             Long txnUserId,
             String txnStatus,
-            TransactionType typeOfTransaction,
-            SubscriptionPlan subscriptionPlan
+            String typeOfTransaction,
+            SubscriptionPlan subscriptionPlan,
+            String environment
     ) {
         this.mobileNo = mobileNo;
         this.amount = amount;
@@ -70,6 +82,7 @@ public class PaymentRequest {
         this.txnStatus = txnStatus;
         this.typeOfTransaction = typeOfTransaction;
         this.subscriptionPlan = subscriptionPlan;
+        this.environment = environment;
     }
 
 
@@ -103,6 +116,14 @@ public class PaymentRequest {
 
     public void setUserID (Long userID) {
         this.userID = userID;
+    }
+
+    public String getEnvironment () {
+        return environment;
+    }
+
+    public void setEnvironment (String environment) {
+        this.environment = environment;
     }
 
     public @Valid Double getCashback () {
@@ -161,11 +182,11 @@ public class PaymentRequest {
         this.txnStatus = txnStatus;
     }
 
-    public @Valid TransactionType getTypeOfTransaction () {
+    public @Valid String getTypeOfTransaction () {
         return typeOfTransaction;
     }
 
-    public void setTypeOfTransaction (@Valid TransactionType typeOfTransaction) {
+    public void setTypeOfTransaction (@Valid String typeOfTransaction) {
         this.typeOfTransaction = typeOfTransaction;
     }
 

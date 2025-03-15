@@ -42,14 +42,14 @@ public class TelecomScrizaAPIService {
     // TODO: Need To Modify the redundant Code
 
     // * Mobile Recharge Plans
-    public String rechargePayment(String mobileNo, String amount, String providerId, String clientId) {
+    public String rechargePayment(String mobileNo, String amount, String providerId, String clientId, String envi) {
         HttpUrl url = buildUrl("api/telecom/v1/payment", Map.of(
                 "api_token", apiKey,
                 "number", mobileNo,
                 "amount", amount,
                 "provider_id", providerId,
                 "client_id", clientId,
-                "environment", environment
+                "environment", envi
         ));
 
         String responseString = executeGetRequest(url);
@@ -161,6 +161,47 @@ public class TelecomScrizaAPIService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+
+    public  boolean verifyBalanceAmount(Double amount){
+
+        String url = baseURL+"/api/telecom/v1/check-balance?api_token="+apiKey;
+
+        OkHttpClient client = okHttpClientProvider.getClient();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+
+            assert response.body() != null;
+            System.out.println(response.body().string());
+            try {
+                // Create ObjectMapper instance
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                // Parse JSON string into JsonNode
+                JsonNode rootNode = objectMapper.readTree(response.body().string());
+
+                // Extract the normal_balance value
+                String normalBalance = rootNode.path("balance").path("normal_balance").asText();
+
+                double accBalance = Double.parseDouble(normalBalance);
+                return accBalance >= amount;
+            } catch (Exception e) {
+                log.error("Exception in API call: {}", e.getMessage());
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("Exception in API call: ", e);
+            return false;
+        }
+    }
+
+
+
 
     // * Recharge Plan Services
 

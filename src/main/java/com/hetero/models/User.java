@@ -31,7 +31,6 @@ public class User implements UserDetails {
     @Convert(converter = AESEncryptor.class)
     private String firstName;
 
-    @NotNull(message = "Last Name cannot be NULL")
     @Pattern(regexp = "[A-Za-z.\\s]+", message = "Enter valid characters in last name")
     @Column(name = "last_name", length = 50)
     @Convert(converter = AESEncryptor.class)
