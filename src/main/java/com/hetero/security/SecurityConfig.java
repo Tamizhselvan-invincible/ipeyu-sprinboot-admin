@@ -45,7 +45,14 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/authentication/**","/login/**", "/register/**", "/refresh_token/**").permitAll() // Public APIs
+                        .requestMatchers(
+                                "/authentication/**",
+                                "/login/**",
+                                "/register/**",
+                                "/refresh_token/**",
+                                "/sign-up",
+                                "/sign-in"
+                        ).permitAll() // Public APIs
                         .requestMatchers("/dashboard", "/swagger-ui/**", "/v3/api-docs/**").hasAuthority("ADMIN") // Requires login
                         .anyRequest().authenticated() // Everything else requires authentication
                 )

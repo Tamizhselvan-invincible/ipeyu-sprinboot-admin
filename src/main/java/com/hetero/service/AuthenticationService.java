@@ -1,6 +1,8 @@
 package com.hetero.service;
 
+import com.hetero.exception.InvalidException;
 import com.hetero.exception.JWTTokenNotValid;
+import com.hetero.exception.UserNotFoundException;
 import com.hetero.models.Role;
 import com.hetero.models.Token;
 import com.hetero.repository.TokenDao;
@@ -69,7 +71,6 @@ public class AuthenticationService {
             throw new IllegalArgumentException("Email cannot be null or empty");
         }
 
-
       // check if user already exist. if exist than throw an Error
 //        if(userDao.findByEmail(request.getUsername()).isPresent()) {
 //            return new AuthenticationResponse(null, null,"User already exist");
@@ -105,6 +106,8 @@ public class AuthenticationService {
         if (request.getOsType() != null) user.setOsType(request.getOsType());
         if(request.getTokens() != null)
             user.setTokens(request.getTokens());
+        if(request.getEmailPassword() != null)
+            user.setEmailPassword(request.getEmailPassword());
 
 
         user.setLastLoginTime(LocalDateTime.now());
@@ -120,17 +123,22 @@ public class AuthenticationService {
 
     }
 
-    public AuthenticationResponse authenticate(User request) throws RuntimeException{
+    public AuthenticationResponse authenticate(User request) throws InvalidException{
+
+        User user = userDao.findByEmail(request.getUsername()).orElseThrow(()->new UserNotFoundException("User "+request.getUsername()+" not found"));
+
+        if(request.getEmailPassword() != null){
+             if (!passwordEncoder.matches(request.getEmailPassword(), user.getEmailPassword())) {
+                throw new InvalidException("User Email "+ request.getEmail() + " Entered Invalid Password");
+            }
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
         );
-
-
-
-        User user = userDao.findByEmail(request.getUsername()).orElseThrow(()->new RuntimeException("No user found"));
 
         user.setLastLoginTime(LocalDateTime.now());
         String accessToken = jwtService.generateAccessToken(user);

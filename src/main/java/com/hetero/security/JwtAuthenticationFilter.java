@@ -3,6 +3,7 @@ package com.hetero.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hetero.service.JwtService;
 import com.hetero.service.UserDetailsServiceImp;
+import com.hetero.utils.ApiErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -100,11 +101,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setContentType("application/json");
 
         // Create JSON response body
-        Map<String, Object> errorResponse = new LinkedHashMap<>();
-        errorResponse.put("status", status); // HTTP Status Code
-        errorResponse.put("error", HttpStatus.valueOf(status).getReasonPhrase()); // Status message
-        errorResponse.put("message", message); // Error message
-        errorResponse.put("timestamp", Instant.now().toString()); // Current timestamp
+//        Map<String, Object> errorResponse2 = new LinkedHashMap<>();
+//        errorResponse.put("status", status); // HTTP Status Code
+//        errorResponse.put("error", HttpStatus.valueOf(status).getReasonPhrase()); // Status message
+//        errorResponse.put("message", message); // Error message
+//        errorResponse.put("timestamp", Instant.now().toString()); // Current timestamp
+
+        ApiErrorResponse<Object> errorResponse = new ApiErrorResponse<>(
+                status,
+                message,
+                HttpStatus.valueOf(status).getReasonPhrase(),
+                null
+        );
 
         // Convert Map to JSON string using Jackson
         ObjectMapper objectMapper = new ObjectMapper();

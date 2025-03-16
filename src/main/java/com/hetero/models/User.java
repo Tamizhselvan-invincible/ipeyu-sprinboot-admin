@@ -127,6 +127,11 @@ public class User implements UserDetails {
     private List<Transaction> transactions = new ArrayList<>();
 
 
+    @Column(name = "password")
+    @JsonIgnore
+    private String emailPassword;
+
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Token> tokens;
@@ -211,6 +216,7 @@ public class User implements UserDetails {
     }
 
 
+
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities () {
@@ -225,6 +231,14 @@ public class User implements UserDetails {
 
     public void setPassword (String password) {
          this.mPin = password;
+    }
+    @JsonIgnore
+    public String getEmailPassword () {
+        return emailPassword;
+    }
+
+    public void setEmailPassword (String emailPassword) {
+        this.emailPassword = emailPassword;
     }
 
     @JsonIgnore
@@ -245,11 +259,11 @@ public class User implements UserDetails {
         this.firstName = firstName;
     }
 
-    public @NotNull(message = "Last Name cannot be NULL") @Pattern(regexp = "[A-Za-z.\\s]+", message = "Enter valid characters in last name") String getLastName () {
+    public @Pattern(regexp = "[A-Za-z.\\s]+", message = "Enter valid characters in last name") String getLastName () {
         return lastName;
     }
 
-    public void setLastName (@NotNull(message = "Last Name cannot be NULL") @Pattern(regexp = "[A-Za-z.\\s]+", message = "Enter valid characters in last name") String lastName) {
+    public void setLastName (@Pattern(regexp = "[A-Za-z.\\s]+", message = "Enter valid characters in last name") String lastName) {
         this.lastName = lastName;
     }
 

@@ -82,6 +82,13 @@ public class GlobalExceptionHandler {
         return buildValidationErrorResponse(HttpStatus.BAD_REQUEST, "Validation Failed", "Request validation failed", errors);
     }
 
+    @ExceptionHandler(InvalidException.class)
+    public ResponseEntity<?> handleInValidException(InvalidException ex) {
+        log.error("Unexpected error: {}", ex.getMessage());
+
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid Data", ex.getMessage(), null);
+    }
+
     // Handle General Exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGeneralException(Exception ex) {
