@@ -49,7 +49,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUserBlockStatus(Long id, User updatedUser) {
         User existingUser = getUser(id);
-        if (existingUser == null) new UserNotFoundException("User with ID " + id + " not found");
+        if (existingUser == null)
+            throw  new UserNotFoundException("User with ID " + id + " not found");
 
         existingUser.setBlocked(updatedUser.isBlocked());
         return userDao.save(existingUser);
@@ -61,7 +62,8 @@ public class UserServiceImpl implements UserService {
     public List<Transaction> getUserTransactions(Long userId) {
 
         User existingUser = getUser(userId);
-        if (existingUser == null) new UserNotFoundException("User with ID " + userId + " not found");
+        if (existingUser == null)
+            throw new UserNotFoundException("User with ID " + userId + " not found");
 
         List<Transaction> transactions = transactionDao.findByUserId(userId);
         if (transactions == null || transactions.isEmpty()) return new ArrayList<>();
@@ -113,8 +115,7 @@ public class UserServiceImpl implements UserService {
         if (newUser.getOsType() != null) existingUser.setOsType(newUser.getOsType());
         if(newUser.getTokens() != null) existingUser.setTokens(newUser.getTokens());
         if(newUser.getCashBack() != null) existingUser.setCashBack(newUser.getCashBack());
-//        if(newUser.getCardType() != null) existingUser.setCardType(newUser.getCardType());
-
+        if(newUser.getEmailPassword() != null) existingUser.setEmailPassword(newUser.getEmailPassword());
 
         // Handle boolean field updates
         existingUser.setBlocked(newUser.isBlocked());
@@ -145,7 +146,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void updateUserCashBackTransactions(Long userId,Double cashBackAmount) {
-       User user = userDao.findById(userId).orElseThrow();
+       User user = userDao.findById(userId).orElseThrow(
+               () -> new UserNotFoundException("User with ID " + userId + " not found")
+       );
        String useCashback = user.getCashBack();
        if (useCashback == null)
            user.setCashBack(String.valueOf(cashBackAmount));

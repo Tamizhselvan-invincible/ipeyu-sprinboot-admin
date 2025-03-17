@@ -3,19 +3,12 @@ package com.hetero.service;
 import com.hetero.exception.InvalidException;
 import com.hetero.exception.JWTTokenNotValid;
 import com.hetero.exception.UserNotFoundException;
-import com.hetero.models.Role;
-import com.hetero.models.Token;
+import com.hetero.models.*;
 import com.hetero.repository.TokenDao;
 import com.hetero.repository.UserDao;
-import com.hetero.models.User;
-import com.hetero.models.AuthenticationResponse;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,12 +64,13 @@ public class AuthenticationService {
             throw new IllegalArgumentException("Email cannot be null or empty");
         }
 
-      // check if user already exist. if exist than throw an Error
-//        if(userDao.findByEmail(request.getUsername()).isPresent()) {
-//            return new AuthenticationResponse(null, null,"User already exist");
-//        }
+      /* //check if user already exist. if exist than throw an Error
+        if(userDao.findByEmail(request.getUsername()).isPresent()) {
+            return new AuthenticationResponse(null, null,"User already exist");
+        }
+        */
 
-         /** check if user already exist. if exist than authenticate the user **/
+         /* * check if user already exist. if exist than authenticate the user **/
         if(userDao.findByEmail(request.getUsername()).isPresent()) {
             return this.authenticate(request);
         }
@@ -157,9 +151,7 @@ public class AuthenticationService {
             return;
         }
 
-        validTokens.forEach(t-> {
-            t.setLoggedOut(true);
-        });
+        validTokens.forEach(t -> t.setLoggedOut(true));
 
         tokenRepository.saveAll(validTokens);
     }
@@ -205,5 +197,16 @@ public class AuthenticationService {
 
         throw new JWTTokenNotValid("Token is Not Valid");
 
+    }
+
+    public User forgotPassword(UserForgotPassword request,User user) {
+
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getEmailPassword())) {
+            throw new InvalidException("User Email "+ request.getEmail() + " Entered Invalid Password");
+        }
+        String encodedPassword = passwordEncoder.encode(request.getNewPassword());
+        user.setEmailPassword(encodedPassword);
+        user = userDao.save(user);
+        return user;
     }
 }

@@ -1,9 +1,7 @@
 package com.hetero.controller;
 
-import com.hetero.models.AuthenticationResponse;
-import com.hetero.models.Role;
-import com.hetero.models.User;
-import com.hetero.models.UserSignupRequest;
+import com.hetero.exception.UserNotFoundException;
+import com.hetero.models.*;
 import com.hetero.repository.UserDao;
 import com.hetero.service.AuthenticationService;
 import com.hetero.utils.ApiResponse;
@@ -112,6 +110,35 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(
+            @Valid @RequestBody UserForgotPassword request
+            ) {
+
+        User user = userDao.findByEmail(request.getEmail()).orElseThrow(
+                () -> new UserNotFoundException("Email "+ request.getEmail() +" not found")
+        );
+
+        if(user.getEmailPassword() == null || user.getEmailPassword().isEmpty()) {
+            ApiResponse<User> response = new ApiResponse<>(
+                    HttpStatus.NOT_ACCEPTABLE.value(),
+                    "User Logged Via Google Account. User Password is Not Found",
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(response);
+        }
+
+        User updatedUser = authService.forgotPassword(request,user);
+
+        ApiResponse<User> response = new ApiResponse<>(
+                HttpStatus.ACCEPTED.value(),
+                "User Password has Updated",
+                updatedUser
+        );
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
 
     @NotNull
     private static User getUserFromSignupRequest (UserSignupRequest request, String encryptedPassword) {
