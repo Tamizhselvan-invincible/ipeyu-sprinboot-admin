@@ -100,13 +100,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.setStatus(status);
         response.setContentType("application/json");
 
-        // Create JSON response body
-//        Map<String, Object> errorResponse2 = new LinkedHashMap<>();
-//        errorResponse.put("status", status); // HTTP Status Code
-//        errorResponse.put("error", HttpStatus.valueOf(status).getReasonPhrase()); // Status message
-//        errorResponse.put("message", message); // Error message
-//        errorResponse.put("timestamp", Instant.now().toString()); // Current timestamp
-
         ApiErrorResponse<Object> errorResponse = new ApiErrorResponse<>(
                 status,
                 message,

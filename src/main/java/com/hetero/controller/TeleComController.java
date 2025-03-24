@@ -84,8 +84,10 @@ public class TeleComController {
     }
 
     try {
+        log.info(jsonData.toString());
         transactionService.updateTransactionByPaymentRequest(paymentRequest, jsonData);
     }catch (Exception e){
+        log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
                 .body(new ApiErrorResponse<>(417, "Transaction Update is Not Valid", e.getMessage(), null));
 

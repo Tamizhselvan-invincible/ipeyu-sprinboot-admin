@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Entity
@@ -40,13 +42,12 @@ public class Ledger {
     private Integer noOfBlockedUsers;
 
     @Column(name = "stats_date")
-    @Temporal(TemporalType.DATE)
-    private Date statsDate;
+    private Long statsDate;
 
     public Ledger () {
     }
 
-    public Ledger (Long id, Integer version, BigDecimal totalAmount, BigDecimal totalFailedAmount, Integer totalTransactions, Integer failedTransactions, Integer noOfUsers, Integer noOfBlockedUsers, Date statsDate) {
+    public Ledger (Long id, Integer version, BigDecimal totalAmount, BigDecimal totalFailedAmount, Integer totalTransactions, Integer failedTransactions, Integer noOfUsers, Integer noOfBlockedUsers, Long statsDate) {
         this.id = id;
         this.version = version;
         this.totalAmount = totalAmount;
@@ -122,11 +123,17 @@ public class Ledger {
         this.noOfBlockedUsers = noOfBlockedUsers;
     }
 
-    public Date getStatsDate () {
+    public Long getStatsDate () {
         return statsDate;
     }
 
-    public void setStatsDate (Date statsDate) {
+    public void setStatsDate (Long statsDate) {
         this.statsDate = statsDate;
+    }
+
+    public LocalDateTime getFormattedStatsTime() {
+        String dateStr = String.valueOf(statsDate);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        return LocalDateTime.parse(dateStr, formatter);
     }
 }

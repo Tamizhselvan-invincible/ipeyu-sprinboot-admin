@@ -9,6 +9,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Date;
 
 @Entity
@@ -48,11 +49,10 @@ public class SubscriptionPlan {
 
     @Column(name = "created_at")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @CreationTimestamp
-    private Date dateCreated;
+    private Long dateCreated;
 
     public SubscriptionPlan () {
-        this.dateCreated = new Date();
+        this.dateCreated = Instant.now().getEpochSecond();
     }
 
     public SubscriptionPlan ( String name, String operator, BigDecimal amount, Integer validity, String dataLimit, String callBenefits, String smsBenefits, String description, boolean isActive) {
@@ -65,7 +65,7 @@ public class SubscriptionPlan {
         this.smsBenefits = smsBenefits;
         this.description = description;
         this.isActive = isActive;
-        this.dateCreated = new Date();
+        this.dateCreated = Instant.now().getEpochSecond();
     }
 
     public Long getId () {
@@ -148,11 +148,11 @@ public class SubscriptionPlan {
         isActive = active;
     }
 
-    public Date getDateCreated () {
+    public Long getDateCreated () {
         return dateCreated;
     }
 
-    public void setDateCreated (Date dateCreated) {
+    public void setDateCreated (Long dateCreated) {
         this.dateCreated = dateCreated;
     }
 }

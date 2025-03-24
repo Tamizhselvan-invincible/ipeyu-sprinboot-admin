@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -129,7 +130,7 @@ public class UserServiceImpl implements UserService {
             existingUser.getTransactions().addAll(newUser.getTransactions());
         }
 
-        existingUser.setDateUpdated(new Date());
+        existingUser.setDateUpdated(Instant.now().getEpochSecond());
         // Save the updated user
         return userDao.save(existingUser);
     }

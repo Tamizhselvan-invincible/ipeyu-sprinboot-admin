@@ -1,12 +1,16 @@
 package com.hetero.utils;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ApiErrorResponse<T> {
     private int status;
     private String message;
     private String error;
-    private LocalDateTime timestamp;
+
+    private String timestamp;
     private T data;
 
     public int getStatus () {
@@ -33,12 +37,12 @@ public class ApiErrorResponse<T> {
         this.error = error;
     }
 
-    public LocalDateTime getTimestamp () {
+    public String getTimestamp () {
         return timestamp;
     }
 
-    public void setTimestamp (LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp () {
+        this.timestamp =  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));;
     }
 
     public T getData () {
@@ -53,9 +57,7 @@ public class ApiErrorResponse<T> {
         this.status = status;
         this.message = message;
         this.error = error;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));;
         this.data = data;
     }
-
-    // Getters and Setters
 }

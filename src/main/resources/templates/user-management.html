@@ -204,7 +204,7 @@
                                 <td th:text="${user.firstName + ' ' + user.lastName}"></td>
                                 <td th:text="${user.email}"></td>
                                 <td th:text="${user.mobileNo}"></td>
-                                <td th:text="${#temporals.format(user.lastLoginTime, 'dd-MM-yyyy HH:mm')}"></td>
+                                <td th:text="${user.lastLoginTime}"></td>
                                 <td><span class="badge bg-success" th:text="${user.accountStatus}"></span></td>
                                 <td>
                                     <button class="btn btn-warning btn-sm block-user" th:data-id="${user.id}">Block</button>
@@ -246,7 +246,8 @@
                                 <td th:text="${user.firstName + ' ' + user.lastName}"></td>
                                 <td th:text="${user.email}"></td>
                                 <td th:text="${user.mobileNo}"></td>
-                                <td th:text="${#temporals.format(user.lastLoginTime, 'dd-MM-yyyy HH:mm')}"></td>
+                                <td th:text="${user.lastLoginTime}"></td>
+
                                 <td><span class="badge bg-danger" th:text="${user.accountStatus}"></span></td>
                                 <td>
                                     <button class="btn btn-success btn-sm unblock-user" th:data-id="${user.id}">Unblock</button>

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -107,7 +108,7 @@ public class TransactionServiceImpl implements TransactionService {
             ));
 
             transaction.setDeleted(true);
-            transaction.setDeletedAt(new Date());
+            transaction.setDeletedAt(Instant.now().getEpochSecond());
             transactionDao.save(transaction); // Soft delete
 
             return new ApiResponse<>(HttpStatus.OK.value(), "Transaction deleted successfully", null);

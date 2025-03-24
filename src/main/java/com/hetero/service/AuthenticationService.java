@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class AuthenticationService {
             user.setEmailPassword(request.getEmailPassword());
 
 
-        user.setLastLoginTime(LocalDateTime.now());
+        user.setLastLoginTime(Instant.now().getEpochSecond());
 
         user = userDao.save(user);
 
@@ -134,7 +135,7 @@ public class AuthenticationService {
                 )
         );
 
-        user.setLastLoginTime(LocalDateTime.now());
+        user.setLastLoginTime(Instant.now().getEpochSecond());
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 

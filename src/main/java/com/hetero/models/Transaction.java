@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Date;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
@@ -65,12 +65,11 @@ public class Transaction {
     private PaymentMethod paymentMethod;
 
     @Column(name = "created_at")
-    @CreationTimestamp
     @Convert(converter = AESEncryptor.class)
-    private Date dateCreated;
+    private Long dateCreated;
 
     @Column(name = "deleted_at")
-    private Date deletedAt;
+    private Long deletedAt;
 
     @Column(name = "transaction_reference")
     @Convert(converter = AESEncryptor.class)
@@ -93,7 +92,7 @@ public class Transaction {
 
 
     public Transaction () {
-        this.dateCreated = new Date();
+        this.dateCreated = Instant.now().getEpochSecond();
     }
 
     public Transaction (
@@ -107,8 +106,7 @@ public class Transaction {
             String amount,
             Platform platformType,
             PaymentMethod paymentMethod,
-            Date dateCreated,
-            Date deletedAt,
+            Long deletedAt,
             String transactionReference,
             String txnImage,
             String txnUserName,
@@ -125,7 +123,7 @@ public class Transaction {
         this.amount = amount;
         this.platformType = platformType;
         this.paymentMethod = paymentMethod;
-        this.dateCreated = new Date();
+        this.dateCreated = Instant.now().getEpochSecond();
         this.deletedAt = deletedAt;
         this.transactionReference = transactionReference;
         this.txnImage = txnImage;
@@ -223,19 +221,19 @@ public class Transaction {
         this.paymentMethod = paymentMethod;
     }
 
-    public Date getDateCreated (){
+    public Long getDateCreated (){
         return dateCreated;
     }
 
-    public void setDateCreated (Date dateCreated) {
+    public void setDateCreated (Long dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public Date getDeletedAt () {
+    public Long getDeletedAt () {
         return deletedAt;
     }
 
-    public void setDeletedAt (Date deletedAt) {
+    public void setDeletedAt (Long deletedAt) {
         this.deletedAt = deletedAt;
     }
 

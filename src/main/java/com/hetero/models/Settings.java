@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Entity
@@ -30,22 +31,22 @@ public class Settings {
     private String appLogo;
 
     @Column(name = "created_at")
-    @CreationTimestamp
-    private Date createdAt;
+    private Long createdAt;
 
     @Column(name = "updated_at")
-    @UpdateTimestamp
-    private Date updatedAt;
+    private Long updatedAt;
 
     public Settings () {
+        this.createdAt = Instant.now().getEpochSecond();
+        this.updatedAt = Instant.now().getEpochSecond();
     }
 
-    public Settings (String bannerName, String appName, String appLogo, Date createdAt, Date updatedAt) {
+    public Settings (String bannerName, String appName, String appLogo) {
         this.bannerName = bannerName;
         this.appName = appName;
         this.appLogo = appLogo;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = Instant.now().getEpochSecond();
+        this.updatedAt = Instant.now().getEpochSecond();
     }
 
     public Long getId () {
@@ -80,19 +81,19 @@ public class Settings {
         this.appLogo = appLogo;
     }
 
-    public Date getCreatedAt () {
+    public Long getCreatedAt () {
         return createdAt;
     }
 
-    public void setCreatedAt (Date createdAt) {
+    public void setCreatedAt (Long createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt () {
+    public Long getUpdatedAt () {
         return updatedAt;
     }
 
-    public void setUpdatedAt (Date updatedAt) {
+    public void setUpdatedAt (Long updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

@@ -3,6 +3,7 @@ package com.hetero.models;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,15 +20,15 @@ public class AuditLog {
     private Transaction transaction;
 
     @CreationTimestamp
-    private LocalDateTime timestamp;
+    private Long timestamp;
 
 
 
     public AuditLog () {
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = Instant.now().getEpochSecond();
     }
 
-    public AuditLog (String userEmail, Transaction transaction, LocalDateTime timestamp) {
+    public AuditLog (String userEmail, Transaction transaction, Long timestamp) {
         this.userEmail = userEmail;
         this.transaction = transaction;
         this.timestamp = timestamp;
@@ -58,11 +59,11 @@ public class AuditLog {
         this.userEmail = userEmail;
     }
 
-    public LocalDateTime getTimestamp () {
+    public Long getTimestamp () {
         return timestamp;
     }
 
-    public void setTimestamp (LocalDateTime timestamp) {
+    public void setTimestamp (Long timestamp) {
         this.timestamp = timestamp;
     }
 }

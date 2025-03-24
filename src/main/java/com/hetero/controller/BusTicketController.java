@@ -48,8 +48,9 @@ public class BusTicketController {
         } else if (response.getBody() instanceof String) {
             cityService.saveCitiesFromJson(response.getBody().toString());
         }
-        ApiResponse<String> apiResponse = new ApiResponse<>(HttpStatus.ACCEPTED.value(),"\"Cities saved successfully!\"", null);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(apiResponse);
+        ApiResponse<String> apiResponse = new ApiResponse<>(HttpStatus.ACCEPTED.value(),"Cities saved successfully!", null);
+//        return ResponseEntity.status(HttpStatus.ACCEPTED).body(apiResponse);
+        return response;
     }
 
     @PostMapping("/availabletrips")

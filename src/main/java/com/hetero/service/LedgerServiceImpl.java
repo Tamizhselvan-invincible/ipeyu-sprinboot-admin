@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 
@@ -44,7 +45,7 @@ public class LedgerServiceImpl implements LedgerService {
            ledger.setFailedTransactions(0);
            ledger.setNoOfUsers(0);
            ledger.setNoOfBlockedUsers(0);
-           ledger.setStatsDate(new Date());
+           ledger.setStatsDate(Instant.now().getEpochSecond());
            ledgerDao.save(ledger);
        }
 

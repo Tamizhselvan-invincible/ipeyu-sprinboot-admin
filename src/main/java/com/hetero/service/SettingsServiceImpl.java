@@ -5,6 +5,8 @@ import com.hetero.repository.SettingsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
 import java.util.Date;
 
 @Service
@@ -31,8 +33,8 @@ public class SettingsServiceImpl implements SettingsService {
             settings.setAppLogo("");
             settings.setAppName("");
             settings.setBannerName("");
-            settings.setCreatedAt(new Date());
-            settings.setUpdatedAt(new Date());
+            settings.setCreatedAt(Instant.now().getEpochSecond());
+            settings.setUpdatedAt(Instant.now().getEpochSecond());
             settingsDao.save(settings);
         }
         return settings;

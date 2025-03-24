@@ -12,8 +12,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import java.time.Instant;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -63,14 +65,12 @@ public class User implements UserDetails {
     private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
     @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreationTimestamp
-    private Date dateCreated;
+    private Long dateCreated;
+
 
     @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    private Date dateUpdated;
+    private Long dateUpdated;
+
 
     @Column(name = "cashback_amount")
     @Convert(converter = AESEncryptor.class)
@@ -92,21 +92,20 @@ public class User implements UserDetails {
     private Platform platformType = Platform.ALL;
 
     @Column(name = "deleted_at",nullable = true)
-    private Date deletedAt;
+    private Long deletedAt;
 
     @Column(name = "app_version")
     String appVersion;
 
     @Column(name = "last_login_time")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime lastLoginTime;
+    private Long lastLoginTime;
 
     @Column(name = "user_role", columnDefinition = "VARCHAR(20) CHECK (user_role IN ('USER', 'ADMIN', 'PROVIDER'))")
     @Enumerated(EnumType.STRING)
     Role userRole;
 
     @Column(name = "app_updated_at")
-    private Date appUpdatedAt;
+    private Long appUpdatedAt;
 
     @Column(name = "device_brand_name")
     private String deviceBrandName;
@@ -152,8 +151,8 @@ public class User implements UserDetails {
 
     public User () {
         this.cardType = CardType.BASIC;
-        this.dateCreated = new Date();
-        this.dateUpdated = new Date();
+        this.dateCreated = Instant.now().getEpochSecond();
+        this.dateUpdated = Instant.now().getEpochSecond();
         this.cardNumber = generateUniqueCardNumber();
         this.cashBack = "0.0";
         this.lifeTimeEarning = "0.0";
@@ -176,13 +175,13 @@ public class User implements UserDetails {
             String profilePicture,
             boolean isBlocked,
             AccountStatus accountStatus,
-            Date dateUpdated,
+            Long dateUpdated,
             Platform platformType,
-            Date deletedAt,
+            Long deletedAt,
             String appVersion,
             LocalDateTime lastLoginTime,
             Role userRole,
-            Date appUpdatedAt,
+            Long appUpdatedAt,
             String deviceBrandName,
             String deviceVersionCode,
             String osType,
@@ -196,12 +195,12 @@ public class User implements UserDetails {
         this.profilePicture = profilePicture;
         this.isBlocked = isBlocked;
         this.accountStatus = accountStatus;
-        this.dateCreated = new Date();
+        this.dateCreated = Instant.now().getEpochSecond();
         this.dateUpdated = dateUpdated;
         this.platformType = platformType;
         this.deletedAt = deletedAt;
         this.appVersion = appVersion;
-        this.lastLoginTime = lastLoginTime;
+        this.lastLoginTime = Instant.now().getEpochSecond();
         this.userRole = userRole;
         this.appUpdatedAt = appUpdatedAt;
         this.deviceBrandName = deviceBrandName;
@@ -339,19 +338,19 @@ public class User implements UserDetails {
         this.accountStatus = accountStatus;
     }
 
-    public Date getDateCreated () {
+    public Long getDateCreated () {
         return dateCreated;
     }
 
-    public void setDateCreated (Date dateCreated) {
+    public void setDateCreated (Long dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public Date getDateUpdated () {
+    public Long getDateUpdated () {
         return dateUpdated;
     }
 
-    public void setDateUpdated (Date dateUpdated) {
+    public void setDateUpdated (Long dateUpdated) {
         this.dateUpdated = dateUpdated;
     }
 
@@ -363,11 +362,11 @@ public class User implements UserDetails {
         this.platformType = platformType;
     }
 
-    public Date getDeletedAt () {
+    public Long getDeletedAt () {
         return deletedAt;
     }
 
-    public void setDeletedAt (Date deletedAt) {
+    public void setDeletedAt (Long deletedAt) {
         this.deletedAt = deletedAt;
     }
 
@@ -379,11 +378,11 @@ public class User implements UserDetails {
         this.appVersion = appVersion;
     }
 
-    public LocalDateTime getLastLoginTime () {
+    public Long getLastLoginTime () {
         return lastLoginTime;
     }
 
-    public void setLastLoginTime (LocalDateTime lastLoginTime) {
+    public void setLastLoginTime (Long lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
     }
 
@@ -395,11 +394,11 @@ public class User implements UserDetails {
         this.userRole = userRole;
     }
 
-    public Date getAppUpdatedAt () {
+    public Long getAppUpdatedAt () {
         return appUpdatedAt;
     }
 
-    public void setAppUpdatedAt (Date appUpdatedAt) {
+    public void setAppUpdatedAt (Long appUpdatedAt) {
         this.appUpdatedAt = appUpdatedAt;
     }
 
@@ -457,8 +456,9 @@ public class User implements UserDetails {
         // Generate UUID and extract only the required number of characters
         String uuid = UUID.randomUUID().toString().replace("-", ""); // Remove hyphens
         String uniqueDigits = uuid.substring(0, 12); // Take first 12 characters
-
-        // Format as IPXXXX-XXXX-XXXX
         return prefix + uniqueDigits.substring(0, 4) + "-" + uniqueDigits.substring(4, 8) + "-" + uniqueDigits.substring(8, 12);
     }
+
+
+
 }
